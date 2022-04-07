@@ -1,36 +1,42 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import NewSingle from './NewSingle';
 
 class News extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            news: [],
-        }
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      news: [],
+    };
+  }
 
-    componentDidMount() {
-        const url = 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=9eb93445df6e404cb10cc4cd9d202d9f';
+  componentDidMount() {
+    const url = `https://newsapi.org/v2/${this.props.news.type}?${this.props.news.query}&apiKey=9eb93445df6e404cb10cc4cd9d202d9f`;
 
-        fetch(url)
-        .then((response) => {
-            
+    fetch(url)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        this.setState({
+          news: data.articles
         })
-    }
+      })
+      .catch((error) => console.log(error));
+  }
 
+  renderItems() {
+    return this.state.news.map((item) => (
+      <NewSingle key={item.url} item={item} />
+    ));
+  }
 
-    renderItems() {
-        return this.props.items.map((item)=> {
-            <NewSingle key={item.id} item={item}/>
-        })
-    }
-    render() {
-        return(
-            <ul>
-                {this.renderItems()}
-            </ul>
-        )
-    }
+  render() {
+    return (
+      <div className="row">
+        {this.renderItems()}
+      </div>
+    );
+  }
 }
 
 export default News;
